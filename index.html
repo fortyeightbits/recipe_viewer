@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset = "UTF-8">
+      <title>Recipe Viewer</title>
+   </head>
+
+   <body>
+     <h2>Enter recipe URL:</h2>
+     <form id="recipe">
+       <input type="text" id="recipeUrl">
+       <input type="submit" value="Submit">
+     </form>
+     <br>
+     <div>
+     Favorites:
+     <div onclick="favHandler(this.id)" id="eggplant">Sichuan Eggplant</div>
+     <div onclick="favHandler(this.id)" id="chickenrice">Chicken Rice</div>
+     <div onclick="favHandler(this.id)" id="siewyoke">Siew Yoke</div>
+   </div>
+     <br>
+     <div id="recipeReply"></div>
+   </body>
+
+   <script src="renderer.js"></script>
+</html>
