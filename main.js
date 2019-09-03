@@ -2,6 +2,7 @@
 TODO:
 Make it prettyyyy
 Add favourite button
+Close window
 */
 
 const { app, BrowserWindow, ipcMain } = require('electron')
@@ -15,11 +16,12 @@ app.on('ready', () => {
 	mainWindow = new BrowserWindow({
 		webPreferences: {
 			nodeIntegration: true
-		}
+		},
+		//frame: false
 	})
 
   mainWindow.loadFile("index.html")
-	mainWindow.maximize()
+	//mainWindow.maximize()
 	mainWindow.openDevTools()
 
 	ipcMain.on('update-notify-value', (event, arg) => {

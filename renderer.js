@@ -8,8 +8,7 @@ var favourites = {
 }
 
 let replyDiv = document.querySelector('#recipeReply');
-
-document.querySelector('input[type="submit"]').addEventListener('click', function(e) {
+document.querySelector('button[type="submit"]').addEventListener('click', function(e) {
   let url = document.getElementById("recipeUrl").value;
   ipcRenderer.send('update-notify-value', url)
 
@@ -29,6 +28,6 @@ function favHandler(id){
   console.log(favUrl)
   ipcRenderer.send('update-notify-value', favUrl)
 
-  //Print loading message
-  replyDiv.innerHTML = "Loading..."
+  //Print loading message, animation not working
+  replyDiv.innerHTML = '<div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div> Loading...'
 }

@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <meta charset = "UTF-8">
-      <title>Recipe Viewer</title>
+     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-orange.min.css">
+     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+     <meta charset = "UTF-8">
+
+     <style>
+     .favtext {
+       text-transform: capitalize;
+     }
+     .favbutton {
+       margin-right: 5px;
+     }
+     .favtitle {
+       font-size: 15px;
+     }
+     </style>
+
+     <title>Recipe Viewer</title>
    </head>
 
-   <body>
-     <h2>Enter recipe URL:</h2>
+   <body bgcolor="#e2f5ec">
      <form id="recipe">
-       <input type="text" id="recipeUrl">
-       <input type="submit" value="Submit">
+       <div class="mdl-textfield mdl-js-textfield">
+         <input class="mdl-textfield__input" type="text" id="recipeUrl">
+         <label class="mdl-textfield__label" for="sample1">Recipe URL...</label>
+       </div>
+       <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"> Submit </button>
      </form>
-     <br>
      <div>
-     Favorites:
-     <div onclick="favHandler(this.id)" id="eggplant">Sichuan Eggplant</div>
-     <div onclick="favHandler(this.id)" id="chickenrice">Chicken Rice</div>
-     <div onclick="favHandler(this.id)" id="siewyoke">Siew Yoke</div>
+     <div class="favtitle">Favorites:</div>
+     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(this.id)" id="eggplant"> <div class="favtext">Sichuan Eggplant</div> </button>
+     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(this.id)" id="chickenrice"> <div class="favtext">Chicken Rice</div> </button>
+     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(this.id)" id="siewyoke"> <div class="favtext">Siew Yoke</div> </button>
    </div>
      <br>
      <div id="recipeReply"></div>
