@@ -1,8 +1,7 @@
 /*
 TODO:
-Make it prettyyyy
 Add favourite button
-Close window
+Close window when done pulling
 */
 
 const { app, BrowserWindow, ipcMain } = require('electron')
@@ -35,7 +34,6 @@ app.on('ready', () => {
 		recipeWindow.openDevTools()
 
 		recipeWindow.webContents.once('dom-ready', () => {
-			console.log("dom ready")
 			recipeWindow.webContents.executeJavaScript(`
 
 				recipe_selectors = [
