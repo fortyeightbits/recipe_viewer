@@ -8,17 +8,17 @@ var favourites = {
 }
 
 let replyDiv = document.querySelector('#recipeReply');
+
 document.querySelector('button[type="submit"]').addEventListener('click', function(e) {
   let url = document.getElementById("recipeUrl").value;
-  ipcRenderer.send('update-notify-value', url)
+  ipcRenderer.send('recipe-request', url)
 
   //Print loading message
-  replyDiv.innerHTML = '<div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div> Loading...'
+  replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Loading...'
   e.preventDefault()
 })
 
 ipcRenderer.on('recipe-reply', (event, arg) => {
-  console.log("received reply")
   var recipe = tidyUpRecipe(arg)
   let replyDiv = document.querySelector('#recipeReply');
   replyDiv.innerHTML = recipe;
@@ -27,10 +27,10 @@ ipcRenderer.on('recipe-reply', (event, arg) => {
 function favHandler(id){
   let favUrl = favourites[id]
   console.log(favUrl)
-  ipcRenderer.send('update-notify-value', favUrl)
+  ipcRenderer.send('recipe-request', favUrl)
 
   //Print loading message
-  replyDiv.innerHTML = '<div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div> Loading...'
+  replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Loading...'
 }
 
 String.prototype.insert = function (index, string) {

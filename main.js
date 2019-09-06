@@ -1,13 +1,14 @@
 /*
 TODO:
 Add favourite button
-Close window when done pulling
+On screen keyboard
+Networking
 */
 
 const { app, BrowserWindow, ipcMain } = require('electron')
 
 global.mainWindow = null
-let recipeWindow
+global.recipeWindow = null
 let recipeText
 
 app.on('ready', () => {
@@ -20,10 +21,10 @@ app.on('ready', () => {
 	})
 
   mainWindow.loadFile("index.html")
-	//mainWindow.maximize()
-	mainWindow.openDevTools()
+	mainWindow.maximize()
+	//mainWindow.openDevTools()
 
-	ipcMain.on('update-notify-value', (event, arg) => {
+	ipcMain.on('recipe-request', (event, arg) => {
 		recipeWindow = new BrowserWindow({
 			webPreferences: {
 				nodeIntegration: true
@@ -31,7 +32,7 @@ app.on('ready', () => {
 			show: false
 		})
 		recipeWindow.loadURL(arg)
-		recipeWindow.openDevTools()
+		//recipeWindow.openDevTools()
 
 		recipeWindow.webContents.once('dom-ready', () => {
 			recipeWindow.webContents.executeJavaScript(`
@@ -58,7 +59,6 @@ app.on('ready', () => {
 					if (recipeElement){
 						recipeText = recipeElement.innerText;
 					  mainWin.webContents.send('recipe-reply', recipeText)
-						console.log("sent")
 						return false
 					}
 					selectorCnt++
@@ -66,7 +66,13 @@ app.on('ready', () => {
 				})
 				if (selectorCnt == recipe_selectors.length)
 					mainWin.webContents.send('recipe-reply', "Recipe not found... :(")
+				let recipeWin = remote.getGlobal('recipeWindow')
+				recipeWin.close()
 			`)
+		})
+
+		recipeWindow.webContents.once('console-message', () => {
+			recipeWindow.close();
 		})
 	})
 })
