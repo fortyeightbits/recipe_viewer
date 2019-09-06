@@ -1,10 +1,3 @@
-/*
-TODO:
-Add favourite button
-On screen keyboard
-Networking
-*/
-
 const { app, BrowserWindow, ipcMain } = require('electron')
 
 global.mainWindow = null
@@ -17,7 +10,7 @@ app.on('ready', () => {
 		webPreferences: {
 			nodeIntegration: true
 		},
-		//frame: false
+		frame: false
 	})
 
   mainWindow.loadFile("index.html")
@@ -50,7 +43,6 @@ app.on('ready', () => {
 					'div[itemtype="https://schema.org/Recipe"]',
 					'.post-body.entry-content',
 				]
-
 				const {remote, ipcRenderer} = require('electron')
 				let mainWin = remote.getGlobal('mainWindow')
 				let selectorCnt = 0;
@@ -69,10 +61,6 @@ app.on('ready', () => {
 				let recipeWin = remote.getGlobal('recipeWindow')
 				recipeWin.close()
 			`)
-		})
-
-		recipeWindow.webContents.once('console-message', () => {
-			recipeWindow.close();
 		})
 	})
 })
