@@ -14,10 +14,11 @@
        text-transform: lowercase;
      }
      .submitbutton{
-       margin-left: 10px;
+       margin-left: 5px;
        text-transform: lowercase;
      }
      .favbutton {
+       margin-bottom: 5px;
        margin-right: 5px;
        background-color: #2c3e50 ;
        color: #f8c471;
@@ -25,6 +26,15 @@
        border-width: 1px;
        border-radius: 5px;
        border-color: #f8c471;
+     }
+
+     .inline {
+       display: inline;
+     }
+
+     .cancelbutton {
+       margin-bottom: 5px;
+       margin-right: 10px;
      }
 
      .sidemargin {
@@ -47,6 +57,8 @@
      #urlLabel {
        color: #abb2b9;
      }
+
+
      </style>
 
      <title>Recipe Viewer</title>
@@ -60,12 +72,20 @@
          <label class="mdl-textfield__label" for="recipeUrl" id="urlLabel">Recipe URL...</label>
        </div>
        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Submit </button>
+       <button type="fav" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Add Fav </button>
+       <button type="manage" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Manage Favs </button>
+       <dialog class="mdl-dialog">
+         <div class="mdl-dialog__content"> Enter recipe name: </div>
+         <div class="mdl-dialog__actions">
+           <div class="mdl-textfield mdl-js-textfield">
+             <input class="mdl-textfield__input" type="text" id="recipeName" onclick="require('child_process').exec('matchbox-keyboard');">
+             <label class="mdl-textfield__label" for="recipeName" id="nameLabel">Recipe Name...</label>
+           </div>
+           <button type="button" class="mdl-button enter">Enter</button>
+        </div>
+      </dialog>
      </form>
-     <div>
-     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(this.id)" id="eggplant"> <div class="favtext">Sichuan Eggplant</div> </button>
-     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(this.id)" id="chickenrice"> <div class="favtext">Chicken Rice</div> </button>
-     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(this.id)" id="siewyoke"> <div class="favtext">Siew Yoke</div> </button>
-   </div>
+     <div id="favButtonHtml"></div>
      <br>
      <div id="recipeReply"></div>
    </div>
