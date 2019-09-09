@@ -50,7 +50,9 @@ app.on('ready', () => {
 					let recipeElement = document.querySelector(s)
 					if (recipeElement){
 						recipeText = recipeElement.innerText;
-					  mainWin.webContents.send('recipe-reply', recipeText)
+						let doclink = document.URL.slice(0, -1);
+						let recipe_reply = {link: doclink, text: recipeText}
+					  mainWin.webContents.send('recipe-reply', recipe_reply)
 						console.log("reply sent")
 						return false
 					}
@@ -58,7 +60,10 @@ app.on('ready', () => {
 					return true
 				})
 				if (selectorCnt == recipe_selectors.length)
-					mainWin.webContents.send('recipe-reply', "Recipe not found... :(")
+				{
+					let recipe_reply = {link: "", text: "Recipe not found... :("}
+					mainWin.webContents.send('recipe-reply', recipe_reply)
+				}
 				let recipeWin = remote.getGlobal('recipeWindow')
 				recipeWin.close()
 			`)

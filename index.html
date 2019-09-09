@@ -57,8 +57,6 @@
      #urlLabel {
        color: #abb2b9;
      }
-
-
      </style>
 
      <title>Recipe Viewer</title>
@@ -73,15 +71,17 @@
        </div>
        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Submit </button>
        <button type="fav" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Add Fav </button>
-       <button type="manage" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Manage Favs </button>
+       <button type="manage" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Manage </button>
+       <button type="clear" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Clear Cache </button>
        <dialog class="mdl-dialog">
-         <div class="mdl-dialog__content"> Enter recipe name: </div>
+         Enter recipe name:
          <div class="mdl-dialog__actions">
-           <div class="mdl-textfield mdl-js-textfield">
+           <div class="mdl-textfield mdl-js-textfield" style="margin-right: 15px">
              <input class="mdl-textfield__input" type="text" id="recipeName" onclick="require('child_process').exec('matchbox-keyboard');">
-             <label class="mdl-textfield__label" for="recipeName" id="nameLabel">Recipe Name...</label>
            </div>
-           <button type="button" class="mdl-button enter">Enter</button>
+           <div style="margin-top: 20px;">
+           <button type="button" class="mdl-button enter">Add</button>
+           </div>
         </div>
       </dialog>
      </form>

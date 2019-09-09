@@ -2,7 +2,7 @@ const database = {
   'linkmap': [
     {
       recipeid: "sichuan_eggplant",
-      link: "http://omnivorescookbook.com/sichuan-eggplant/",
+      link: "http://omnivorescookbook.com/sichuan-eggplant",
       name: "Sichuan Eggplant"
     },
     {
@@ -12,15 +12,16 @@ const database = {
     },
     {
       recipeid: "siew_yoke",
-      link: "https://www.malaysianchinesekitchen.com/siew-yoke-roast-pork-belly/",
+      link: "https://www.malaysianchinesekitchen.com/siew-yoke-roast-pork-belly",
       name: "Siew Yoke"
     },
     {
       recipeid: "aglio_olio",
-      link: "https://myfoodstory.com/shrimp-spaghetti-aglio-olio-recipe/",
+      link: "https://myfoodstory.com/shrimp-spaghetti-aglio-olio-recipe",
       name: "Aglio Olio"
     }
-  ]
+  ],
+  'recipecache' : []
 }
 
 const {ipcRenderer} = require('electron')
@@ -34,7 +35,7 @@ let recipeUrlDiv = document.getElementById("recipeUrl");
 
 //Display buttons for favorites
 let favButtonDiv = document.querySelector('#favButtonHtml');
-var linkmapping = store.get('linkmap');
+let linkmapping = store.get('linkmap');
 for (i in linkmapping){
   favButtonDiv.innerHTML += `<div class="inline" id="child_` + linkmapping[i].recipeid
   + `"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(`
@@ -49,8 +50,18 @@ if (! dialog.showModal) {
  * Event listener for submit button
  */
 document.querySelector('button[type="submit"]').addEventListener('click', function(e) {
-  //Send recipe request
+
   let url = recipeUrlDiv.value
+  let checkCacheReturn = checkCache(url)
+  if (checkCacheReturn != "")
+  {
+    //Clear URL text field
+    recipeUrlDiv.value = ""
+    replyDiv.innerHTML = checkCacheReturn
+    e.preventDefault()
+    return
+  }
+  //Send recipe request
   ipcRenderer.send('recipe-request', url)
   //Print loading message
   replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Loading...'
@@ -63,7 +74,7 @@ document.querySelector('button[type="submit"]').addEventListener('click', functi
  * Event listener for manage favorites button
  */
  document.querySelector('button[type="manage"]').addEventListener('click', function(e) {
-   var manlinkmapping = store.get('linkmap');
+   let manlinkmapping = store.get('linkmap');
    for (i in manlinkmapping)
    {
      let childname = "child_" + manlinkmapping[i].recipeid
@@ -72,6 +83,16 @@ document.querySelector('button[type="submit"]').addEventListener('click', functi
      e.preventDefault()
    }
  })
+
+ /**
+  * Event listener for clear cache button
+  */
+  document.querySelector('button[type="clear"]').addEventListener('click', function(e) {
+    let updatedcache = []
+    store.set('recipecache', updatedcache)
+    replyDiv.innerHTML = "Cache cleared!"
+    e.preventDefault()
+  })
 
 /**
  * Event listener for add favorite button
@@ -93,7 +114,11 @@ dialog.querySelector('.enter').addEventListener('click', function() {
   //Get URL and name, add to linkmap database
   let url = recipeUrlDiv.value
   let recipename = document.getElementById("recipeName").value
-  let id = recipename.replace(" ", "_")
+  if (recipename == "") {
+    replyDiv.innerHTML = "Add new favorite failed: no recipe name!"
+      return
+  }
+  let id = recipename.replace(" ", "_").toLowerCase()
   let updatedmap = [...store.get('linkmap'), {recipeid: id, link: url, name: recipename}]
   console.log(updatedmap)
   store.set('linkmap', updatedmap)
@@ -112,10 +137,17 @@ dialog.querySelector('.enter').addEventListener('click', function() {
  * Function to handle requests for favorite recipes
  */
 function favHandler(index) {
-  //Send recipe request
-  var favlinkmapping = store.get('linkmap');
+  //Get favorite link
+  let favlinkmapping = store.get('linkmap');
   let dishurl = favlinkmapping[index].link
   console.log(dishurl)
+  //Check cache
+  let checkCacheReturn = checkCache(dishurl)
+  if (checkCacheReturn != ""){
+    replyDiv.innerHTML = checkCacheReturn
+    return
+  }
+  //Send recipe request
   ipcRenderer.send('recipe-request', dishurl)
   //Print loading message
   replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Loading...'
@@ -126,7 +158,7 @@ function favHandler(index) {
  */
  function deleteHandler(id) {
    //Delete favorite recipe from database
-   var dellinkmapping = store.get('linkmap');
+   let dellinkmapping = store.get('linkmap');
    let updatedmap = store.get('linkmap').filter(dellinkmapping => dellinkmapping.recipeid !== id)
    console.log(updatedmap)
    store.set('linkmap', updatedmap)
@@ -140,13 +172,16 @@ function favHandler(index) {
  * Event listener for reply received through IPC
  */
 ipcRenderer.on('recipe-reply', (event, arg) => {
-  var recipe = tidyUpRecipe(arg)
-  /*
+  //If recipe not found
+  if (arg.link == "") {
+    replyDiv.innerHTML = arg.text
+    return
+  }
+  let recipe = tidyUpRecipe(arg.text)
   //Cache it to reduce load times
-  let updatedcache = [...store.get('recipecache'), {recipeid: id, recipetext: recipe}]
-  console.log(updatedcache)
+  let updatedcache = [...store.get('recipecache'), {cachelink: arg.link, recipetext: recipe}]
   store.set('recipecache', updatedcache)
-  */
+  //Display recipe
   replyDiv.innerHTML = recipe;
 })
 
@@ -156,22 +191,37 @@ ipcRenderer.on('recipe-reply', (event, arg) => {
 function tidyUpRecipe(recipe){
 
   //Start at ingredients header
-  var ingredientPos = recipe.search(new RegExp(/ingredients|ingrediants/i))
+  let ingredientPos = recipe.search(new RegExp(/ingredients|ingrediants/i))
   if (ingredientPos != -1) recipe = recipe.substr(ingredientPos)
 
   //Line break at instructions header and recipe notes
-  var instructionsPos = recipe.search(new RegExp(/instructions|directions/i))
+  let instructionsPos = recipe.search(new RegExp(/instructions|directions/i))
   if (instructionsPos != -1) recipe = recipe.insert(instructionsPos-1, "<br><br>")
 
-  var notesPos = recipe.search(new RegExp(/notes|recipe notes/i))
+  let notesPos = recipe.search(new RegExp(/notes|recipe notes/i))
   if (notesPos != -1) recipe = recipe.insert(notesPos-1, "<br><br>")
 
   //Remove nutrition
-  var nutritionPos = recipe.search(new RegExp(/nutrition/i))
+  let nutritionPos = recipe.search(new RegExp(/nutrition/i))
   if (nutritionPos != -1) recipe = recipe.substr(0, nutritionPos)
 
   return recipe
 }
+
+/**
+ * Helper function to check cache
+ */
+ function checkCache(url){
+   //Check if we know this url
+   let submitcache = store.get('recipecache');
+   for (i in submitcache){
+     if (submitcache[i].cachelink == url)
+     {
+       return submitcache[i].recipetext
+     }
+   }
+   return ""
+ }
 
 /**
  * Helper function for inserting string at index
