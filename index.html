@@ -13,9 +13,10 @@
      .favtext {
        text-transform: lowercase;
      }
-     .submitbutton{
+     .menubutton{
        margin-left: 5px;
        text-transform: lowercase;
+       font-size: 8pt;
      }
      .favbutton {
        margin-bottom: 5px;
@@ -26,6 +27,7 @@
        border-width: 1px;
        border-radius: 5px;
        border-color: #f8c471;
+       font-size: 8pt;
      }
 
      .inline {
@@ -69,10 +71,10 @@
          <input class="mdl-textfield__input" type="text" id="recipeUrl" onclick="require('child_process').exec('matchbox-keyboard');">
          <label class="mdl-textfield__label" for="recipeUrl" id="urlLabel">Recipe URL...</label>
        </div>
-       <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Submit </button>
-       <button type="fav" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Add Fav </button>
-       <button type="manage" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Manage </button>
-       <button type="clear" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submitbutton"> Clear Cache </button>
+       <button type="submit" id="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent menubutton"> Submit </button>
+       <button type="button" id="fav" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent menubutton"> Add Fav </button>
+       <button type="button" id="manage" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent menubutton"> Manage </button>
+       <button type="button" id="clear" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent menubutton"> Clear Cache </button>
        <dialog class="mdl-dialog">
          Enter recipe name:
          <div class="mdl-dialog__actions">

@@ -14,7 +14,7 @@ app.on('ready', () => {
 	})
 
   mainWindow.loadFile("index.html")
-	mainWindow.maximize()
+	//mainWindow.maximize()
 	mainWindow.openDevTools()
 
 	ipcMain.on('recipe-request', (event, arg) => {

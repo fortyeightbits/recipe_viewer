@@ -32,15 +32,10 @@ const store = new Store({defaults: database});
 let replyDiv = document.querySelector('#recipeReply');
 let dialog = document.querySelector('dialog');
 let recipeUrlDiv = document.getElementById("recipeUrl");
+let toggle = false
 
-//Display buttons for favorites
-let favButtonDiv = document.querySelector('#favButtonHtml');
-let linkmapping = store.get('linkmap');
-for (i in linkmapping){
-  favButtonDiv.innerHTML += `<div class="inline" id="child_` + linkmapping[i].recipeid
-  + `"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(`
-  + i + `)"> <div class="favtext">` + linkmapping[i].name + `</div></button></div>`
-}
+//Display all of our favorites
+displayFavButtons();
 
 if (! dialog.showModal) {
   dialogPolyfill.registerDialog(dialog)
@@ -73,36 +68,40 @@ document.querySelector('button[type="submit"]').addEventListener('click', functi
 /**
  * Event listener for manage favorites button
  */
- document.querySelector('button[type="manage"]').addEventListener('click', function(e) {
-   let manlinkmapping = store.get('linkmap');
-   for (i in manlinkmapping)
-   {
-     let childname = "child_" + manlinkmapping[i].recipeid
-     let fav = document.getElementById(childname)
-     fav.innerHTML += `<button class="mdl-chip__action cancelbutton" onclick="deleteHandler('` + manlinkmapping[i].recipeid + `')"><i class="material-icons">cancel</i></button>`
-     e.preventDefault()
+ document.querySelector('#manage').addEventListener('click', function(e) {
+   toggle = !toggle
+   if (toggle) {
+     let manlinkmapping = store.get('linkmap');
+     for (i in manlinkmapping)
+     {
+       let childname = "child_" + manlinkmapping[i].recipeid
+       let fav = document.getElementById(childname)
+       fav.innerHTML += `<button class="mdl-chip__action cancelbutton" onclick="deleteHandler('` + manlinkmapping[i].recipeid + `')"><i class="material-icons">cancel</i></button>`
+     }
    }
+    else {
+      //Fresh display because some may have been removed
+      displayFavButtons()
+    }
  })
 
  /**
   * Event listener for clear cache button
   */
-  document.querySelector('button[type="clear"]').addEventListener('click', function(e) {
+  document.querySelector('#clear').addEventListener('click', function(e) {
     let updatedcache = []
     store.set('recipecache', updatedcache)
     replyDiv.innerHTML = "Cache cleared!"
-    e.preventDefault()
   })
 
 /**
  * Event listener for add favorite button
  */
-document.querySelector('button[type="fav"]').addEventListener('click', function(e) {
+document.querySelector('#fav').addEventListener('click', function(e) {
   //Show dialog pop-up only if URL is entered
   let url = recipeUrlDiv.value
   if (url != ""){
     dialog.showModal()
-    e.preventDefault()
   }
 })
 
@@ -124,6 +123,7 @@ dialog.querySelector('.enter').addEventListener('click', function() {
   store.set('linkmap', updatedmap)
   //Create new favorite button
   let newindex = store.get('linkmap').length
+  let favButtonDiv = document.querySelector('#favButtonHtml');
   favButtonDiv.innerHTML += `<div class="inline" id="child_` + id
   + `"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(` + (newindex-1)
   + `)"> <div class="favtext">` + recipename + `</div></button></div>`
@@ -222,6 +222,21 @@ function tidyUpRecipe(recipe){
    }
    return ""
  }
+
+
+/**
+ * Helper function to display favorite buttons
+ */
+function displayFavButtons(){
+  let favButton = document.querySelector('#favButtonHtml');
+  let linkmapping = store.get('linkmap');
+  favButton.innerHTML = ""
+  for (i in linkmapping){
+    favButton.innerHTML += `<div class="inline" id="child_` + linkmapping[i].recipeid
+    + `"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect favbutton" onclick="favHandler(`
+    + i + `)"> <div class="favtext">` + linkmapping[i].name + `</div></button></div>`
+  }
+}
 
 /**
  * Helper function for inserting string at index
