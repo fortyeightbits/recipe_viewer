@@ -47,6 +47,10 @@ if (! dialog.showModal) {
 document.querySelector('button[type="submit"]').addEventListener('click', function(e) {
 
   let url = recipeUrlDiv.value
+  //Get rid of any ending slash
+  if (url[url.length-1] == '/')
+    url = url.slice(0, -1);
+  //Check cache first
   let checkCacheReturn = checkCache(url)
   if (checkCacheReturn != "")
   {
@@ -68,31 +72,31 @@ document.querySelector('button[type="submit"]').addEventListener('click', functi
 /**
  * Event listener for manage favorites button
  */
- document.querySelector('#manage').addEventListener('click', function(e) {
-   toggle = !toggle
-   if (toggle) {
-     let manlinkmapping = store.get('linkmap');
-     for (i in manlinkmapping)
-     {
-       let childname = "child_" + manlinkmapping[i].recipeid
-       let fav = document.getElementById(childname)
-       fav.innerHTML += `<button class="mdl-chip__action cancelbutton" onclick="deleteHandler('` + manlinkmapping[i].recipeid + `')"><i class="material-icons">cancel</i></button>`
-     }
-   }
-    else {
-      //Fresh display because some may have been removed
-      displayFavButtons()
+document.querySelector('#manage').addEventListener('click', function(e) {
+  toggle = !toggle
+  if (toggle) {
+    let manlinkmapping = store.get('linkmap');
+    for (i in manlinkmapping)
+    {
+      let childname = "child_" + manlinkmapping[i].recipeid
+      let fav = document.getElementById(childname)
+      fav.innerHTML += `<button class="mdl-chip__action cancelbutton" onclick="deleteHandler('` + manlinkmapping[i].recipeid + `')"><i class="material-icons">cancel</i></button>`
     }
- })
+  }
+  else {
+    //Fresh display because some may have been removed
+    displayFavButtons()
+  }
+})
 
- /**
-  * Event listener for clear cache button
-  */
-  document.querySelector('#clear').addEventListener('click', function(e) {
-    let updatedcache = []
-    store.set('recipecache', updatedcache)
-    replyDiv.innerHTML = "Cache cleared!"
-  })
+/**
+ * Event listener for clear cache button
+ */
+document.querySelector('#clear').addEventListener('click', function(e) {
+  let updatedcache = []
+  store.set('recipecache', updatedcache)
+  replyDiv.innerHTML = "Cache cleared!"
+})
 
 /**
  * Event listener for add favorite button
@@ -211,18 +215,17 @@ function tidyUpRecipe(recipe){
 /**
  * Helper function to check cache
  */
- function checkCache(url){
-   //Check if we know this url
-   let submitcache = store.get('recipecache');
-   for (i in submitcache){
-     if (submitcache[i].cachelink == url)
-     {
-       return submitcache[i].recipetext
-     }
-   }
-   return ""
- }
-
+function checkCache(url){
+  //Check if we know this url
+  let submitcache = store.get('recipecache');
+  for (i in submitcache){
+    if (submitcache[i].cachelink == url)
+    {
+      return submitcache[i].recipetext
+    }
+  }
+  return ""
+}
 
 /**
  * Helper function to display favorite buttons

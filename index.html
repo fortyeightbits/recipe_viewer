@@ -13,11 +13,13 @@
      .favtext {
        text-transform: lowercase;
      }
+
      .menubutton{
        margin-left: 5px;
        text-transform: lowercase;
-       font-size: 8pt;
+       font-size: 10pt;
      }
+
      .favbutton {
        margin-bottom: 5px;
        margin-right: 5px;
@@ -27,7 +29,7 @@
        border-width: 1px;
        border-radius: 5px;
        border-color: #f8c471;
-       font-size: 8pt;
+       font-size: 10pt;
      }
 
      .inline {
@@ -61,7 +63,7 @@
      }
      </style>
 
-     <title>Recipe Viewer</title>
+     <title>Don't Touch Just Cook</title>
    </head>
 
    <body bgcolor="#2c3e50">
@@ -75,17 +77,13 @@
        <button type="button" id="fav" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent menubutton"> Add Fav </button>
        <button type="button" id="manage" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent menubutton"> Manage </button>
        <button type="button" id="clear" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent menubutton"> Clear Cache </button>
-       <dialog class="mdl-dialog">
-         Enter recipe name:
-         <div class="mdl-dialog__actions">
-           <div class="mdl-textfield mdl-js-textfield" style="margin-right: 15px">
-             <input class="mdl-textfield__input" type="text" id="recipeName" onclick="require('child_process').exec('matchbox-keyboard');">
-           </div>
-           <div style="margin-top: 20px;">
-           <button type="button" class="mdl-button enter">Add</button>
-           </div>
-        </div>
-      </dialog>
+       <dialog class="mdl-dialog"> Enter recipe name: <div class="mdl-dialog__actions">
+         <div class="mdl-textfield mdl-js-textfield" style="margin-right: 15px">
+           <input class="mdl-textfield__input" type="text" id="recipeName" onclick="require('child_process').exec('matchbox-keyboard');">
+         </div>
+         <div style="margin-top: 20px;"><button type="button" class="mdl-button enter">Add</button></div>
+       </div>
+     </dialog>
      </form>
      <div id="favButtonHtml"></div>
      <br>

@@ -14,8 +14,8 @@ app.on('ready', () => {
 	})
 
   mainWindow.loadFile("index.html")
-	//mainWindow.maximize()
-	mainWindow.openDevTools()
+	mainWindow.maximize()
+	//mainWindow.openDevTools()
 
 	ipcMain.on('recipe-request', (event, arg) => {
 		recipeWindow = new BrowserWindow({
@@ -25,7 +25,7 @@ app.on('ready', () => {
 			show: false
 		})
 		recipeWindow.loadURL(arg)
-		recipeWindow.openDevTools()
+		//recipeWindow.openDevTools()
 
 		recipeWindow.webContents.once('dom-ready', () => {
 			recipeWindow.webContents.executeJavaScript(`
