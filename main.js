@@ -50,7 +50,9 @@ app.on('ready', () => {
 					let recipeElement = document.querySelector(s)
 					if (recipeElement){
 						recipeText = recipeElement.innerText;
-						let doclink = document.URL.slice(0, -1);
+					  let doclink = document.URL;
+						if (doclink[doclink.length-1] == '/')
+					    doclink = doclink.slice(0, -1);
 						let recipe_reply = {link: doclink, text: recipeText}
 					  mainWin.webContents.send('recipe-reply', recipe_reply)
 						console.log("reply sent")
