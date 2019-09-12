@@ -27,6 +27,8 @@ const database = {
 const {ipcRenderer} = require('electron')
 const Store = require('electron-store')
 const store = new Store({defaults: database});
+const express = require('express')
+var exp = express()
 
 //Global element queries
 let replyDiv = document.querySelector('#recipeReply');
@@ -40,6 +42,17 @@ displayFavButtons();
 if (! dialog.showModal) {
   dialogPolyfill.registerDialog(dialog)
 }
+
+//HTTP GET for http://[ipaddr]:3000/dtjc?recipe=[url]
+exp.get('/dtjc', (req, res) => {
+  let url = req.query.recipe
+  res.send('Sent URL: ' + url)
+  ipcRenderer.send('recipe-request', url)
+  //Print loading message
+  replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Received remote URL, loading...'
+})
+
+exp.listen(process.env.PORT || 3000)
 
 /**
  * Event listener for submit button
