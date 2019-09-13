@@ -46,12 +46,14 @@ if (! dialog.showModal) {
 //HTTP GET for http://[ipaddr]:3000/dtjc?recipe=[url]
 exp.get('/dtjc', (req, res) => {
   let url = req.query.recipe
+  //Get rid of any ending slash
+  if (url[url.length-1] == '/')
+    url = url.slice(0, -1);
   res.send('Sent URL: ' + url)
-  ipcRenderer.send('recipe-request', url)
-  //Print loading message
-  replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Received remote URL, loading...'
+  //Send request and print loading message if needed
+  if (sendRecipeRequest(url))
+    replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Received remote URL, loading...'
 })
-
 exp.listen(process.env.PORT || 3000)
 
 /**
@@ -63,20 +65,9 @@ document.querySelector('button[type="submit"]').addEventListener('click', functi
   //Get rid of any ending slash
   if (url[url.length-1] == '/')
     url = url.slice(0, -1);
-  //Check cache first
-  let checkCacheReturn = checkCache(url)
-  if (checkCacheReturn != "")
-  {
-    //Clear URL text field
-    recipeUrlDiv.value = ""
-    replyDiv.innerHTML = checkCacheReturn
-    e.preventDefault()
-    return
-  }
-  //Send recipe request
-  ipcRenderer.send('recipe-request', url)
-  //Print loading message
-  replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Loading...'
+  //Send request and print loading message if needed
+  if (sendRecipeRequest(url))
+    replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Loading...'
   //Clear URL text field
   recipeUrlDiv.value = ""
   e.preventDefault()
@@ -158,16 +149,9 @@ function favHandler(index) {
   let favlinkmapping = store.get('linkmap');
   let dishurl = favlinkmapping[index].link
   console.log(dishurl)
-  //Check cache
-  let checkCacheReturn = checkCache(dishurl)
-  if (checkCacheReturn != ""){
-    replyDiv.innerHTML = checkCacheReturn
-    return
-  }
-  //Send recipe request
-  ipcRenderer.send('recipe-request', dishurl)
-  //Print loading message
-  replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Loading...'
+  //Send request and print loading message if needed
+  if (sendRecipeRequest(dishurl))
+    replyDiv.innerHTML = '<div class="progress"><progress class="progress is-small is-primary" max="100"></progress></div> Loading...'
 }
 
 /**
@@ -189,6 +173,7 @@ function favHandler(index) {
  * Event listener for reply received through IPC
  */
 ipcRenderer.on('recipe-reply', (event, arg) => {
+  console.log("received reply")
   //If recipe not found
   if (arg.link == "") {
     replyDiv.innerHTML = arg.text
@@ -223,6 +208,21 @@ function tidyUpRecipe(recipe){
   if (nutritionPos != -1) recipe = recipe.substr(0, nutritionPos)
 
   return recipe
+}
+
+/**
+ * Helper function to check cache and send recipe request
+ */
+function sendRecipeRequest(url){
+  //Check cache
+  let checkCacheReturn = checkCache(url)
+  if (checkCacheReturn != ""){
+    replyDiv.innerHTML = checkCacheReturn
+    return false
+  }
+  //Send recipe request
+  ipcRenderer.send('recipe-request', url)
+  return true
 }
 
 /**
